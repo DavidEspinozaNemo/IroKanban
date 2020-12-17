@@ -1,0 +1,25 @@
+{
+  "name": "Kanban",
+  "version": "1.0.0",
+  "description": "A simple kanban made with Electronjs, HTML, CSS, JS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guiguat/Kanban.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guiguat/Kanban/issues"
+  },
+  "homepage": "https://github.com/guiguat/Kanban#readme",
+  "devDependencies": {
+    "electron": "^9.0.0",
+    "electron-builder": "^22.7.0"
+  }
+}
