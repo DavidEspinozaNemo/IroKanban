@@ -3,10 +3,15 @@ let cardBeignDragged;
 let dropzones = document.querySelectorAll(".dropzone");
 let priorities;
 // let cards = document.querySelectorAll('.kanbanCard');
+let maxColumn = {
+  config: {
+    max: 2,
+  },
+};
 let dataColors = [
-  { color: "yellow", title: "columna 1" },
-  { color: "green", title: "columna 2" },
-  { color: "blue", title: "columna 3" },
+  { id: 0, color: "yellow", title: "columna 1" },
+  { id: 1, color: "green", title: "columna 2" },
+  { id: 2, color: "blue", title: "columna 3" },
 ];
 let dataCards = {
   config: {
@@ -18,14 +23,20 @@ let theme = "light";
 //initialize
 
 $(document).ready(() => {
+  //localStorage.clear();
   $("#loadingScreen").addClass("d-none");
   theme = localStorage.getItem("@kanban:theme");
   if (theme) {
     $("body").addClass(`${theme === "light" ? "" : "darkmode"}`);
   }
+  if (JSON.parse(localStorage.getItem("@kanban:columns"))) {
+    dataColors = JSON.parse(localStorage.getItem("@kanban:columns"));
+    maxColumn = JSON.parse(localStorage.getItem("@kanban:maxC"));
+  }
   initializeBoards();
   if (JSON.parse(localStorage.getItem("@kanban:data"))) {
     dataCards = JSON.parse(localStorage.getItem("@kanban:data"));
+
     initializeComponents(dataCards);
   }
   initializeCards();
@@ -49,6 +60,35 @@ $(document).ready(() => {
       save();
       appendComponents(newCard);
       initializeCards();
+    }
+  });
+  $("#addC").click(() => {
+    const titleT =
+      $("#titleInputC").val() !== "" ? $("#titleInputC").val() : null;
+    $("#titleInputC").val("");
+
+    if (titleT) {
+      let id = maxColumn.config.max + 1;
+      let newColumn = { id, color: "red", title: titleT };
+      maxColumn.config.max = id;
+      dataColors.push(newColumn);
+      console.log(titleT);
+      console.log(newColumn);
+      save();
+    }
+  });
+  $("#delC").click(() => {
+    const titleT =
+      $("#titleInputCD").val() !== "" ? $("#titleInputCD").val() : null;
+    $("#titleInputCD").val("");
+    if (titleT) {
+      console.log(titleT);
+      dataColors.forEach((columm) => {
+        if (columm.title.toUpperCase() == titleT.toUpperCase()) {
+          deleteColumn(columm.id);
+        }
+      });
+      save();
     }
   });
   $("#deleteAll").click(() => {
@@ -135,7 +175,6 @@ function appendComponents(card) {
   $(`#${card.position}`).append(htmlString);
   priorities = document.querySelectorAll(".priority");
 }
-
 function togglePriority(event) {
   event.target.classList.toggle("is-priority");
   dataCards.cards.forEach((card) => {
@@ -157,6 +196,17 @@ function deleteCard(id) {
     }
   });
 }
+function deleteColumn(id) {
+  console.log(dataColors.toString());
+  dataColors.forEach((column) => {
+    if (column.id == id) {
+      let index = dataColors.indexOf(column);
+      dataColors.splice(index, 1);
+      console.log(dataColors.toString());
+      save();
+    }
+  });
+}
 
 function removeClasses(cardBeignDragged, color) {
   cardBeignDragged.classList.remove("red");
@@ -170,6 +220,8 @@ function removeClasses(cardBeignDragged, color) {
 
 function save() {
   localStorage.setItem("@kanban:data", JSON.stringify(dataCards));
+  localStorage.setItem("@kanban:columns", JSON.stringify(dataColors));
+  localStorage.setItem("@kanban:maxC", JSON.stringify(maxColumn));
 }
 
 function position(cardBeignDragged, color) {
