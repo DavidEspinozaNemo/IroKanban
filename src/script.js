@@ -77,20 +77,6 @@ $(document).ready(() => {
       save();
     }
   });
-  $("#delC").click(() => {
-    const titleT =
-      $("#titleInputCD").val() !== "" ? $("#titleInputCD").val() : null;
-    $("#titleInputCD").val("");
-    if (titleT) {
-      console.log(titleT);
-      dataColors.forEach((columm) => {
-        if (columm.title.toUpperCase() == titleT.toUpperCase()) {
-          deleteColumn(columm.id);
-        }
-      });
-      save();
-    }
-  });
   $("#deleteAll").click(() => {
     dataCards.cards = [];
     save();
@@ -116,9 +102,13 @@ function initializeBoards() {
         <div class="board">
             <h3 class="text-center">${item.title.toUpperCase()}</h3>
             <div class="dropzone" id="${item.color}">
-                
             </div>
         </div>
+        <button class="invisibleBtn">
+                    <span class="material-icons delete" onclick="deleteColumn(${item.id.toString()})">
+                        remove_circle
+                    </span>
+        </button>
         `;
     $("#boardsContainer").append(htmlString);
   });
@@ -175,6 +165,7 @@ function appendComponents(card) {
   $(`#${card.position}`).append(htmlString);
   priorities = document.querySelectorAll(".priority");
 }
+
 function togglePriority(event) {
   event.target.classList.toggle("is-priority");
   dataCards.cards.forEach((card) => {
@@ -203,9 +194,9 @@ function deleteColumn(id) {
       let index = dataColors.indexOf(column);
       dataColors.splice(index, 1);
       console.log(dataColors.toString());
-      save();
     }
   });
+  save();
 }
 
 function removeClasses(cardBeignDragged, color) {
