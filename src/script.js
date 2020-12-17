@@ -194,9 +194,9 @@ function deleteColumn(id) {
       let index = dataColors.indexOf(column);
       dataColors.splice(index, 1);
       console.log(dataColors.toString());
+      save();
     }
   });
-  save();
 }
 
 function removeClasses(cardBeignDragged, color) {
